@@ -6,7 +6,6 @@ parameters:
   x2: 
     bounds: [0, 15]
     type: range
-    value_type: int
 
 objectives:
   y1 y2

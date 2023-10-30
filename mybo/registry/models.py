@@ -14,4 +14,4 @@ MODEL_REGISTRY = {
 }
 
 def parse_model_options(kwargs: Dict) -> Dict:
-    return None
+    return {}

@@ -1,9 +1,9 @@
 seed: 42
 
-warm_start: false
+resume_path: ''
 experiment_group: test
 experiment_name: ${task.name}_${acq.name}_run_${seed}
-result_path: ./../../../results/${experiment_group}/${task.name}/${acq.name}${acq.name}_${seed}
+save_path: results/${experiment_group}/${task.name}/${acq.name}_${seed}
 
 defaults:
   - model: singletask

@@ -1,6 +1,8 @@
 from typing import Dict, Union
 
+from omegaconf import DictConfig, OmegaConf
 from ax.service.utils.instantiation import ObjectiveProperties
+
 
 def parse_parameters(parameter_cfg: Dict) -> Dict:
     parameter_list = []

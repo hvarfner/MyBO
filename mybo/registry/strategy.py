@@ -1,5 +1,6 @@
 from typing import Dict
 
+from omegaconf import OmegaConf
 from ax.models.torch.botorch_modular.acquisition import Acquisition
 from ax.models.torch.botorch_modular.surrogate import Surrogate
 from ax.modelbridge.registry import Models
@@ -23,6 +24,7 @@ def get_generation_strategy(
         Models.SOBOL,
         num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
     )
+    
     bo_step = GenerationStep(
             # model=model_enum,
             model=model_enum,
@@ -35,8 +37,9 @@ def get_generation_strategy(
                 "botorch_acqf_class": ACQUISITION_REGISTRY[acq_cfg.name],
                 "acquisition_options": parse_acquisition_options(acq_cfg.get('kwargs')),
             },
+            # must do OmegaConf.to_containe for dict conversion - serializability when saving
             model_gen_kwargs={"model_gen_options": { 
-                    "optimizer_kwargs": acqopt_cfg
+                    "optimizer_kwargs": OmegaConf.to_container(acqopt_cfg)
                 },
             },
         )
