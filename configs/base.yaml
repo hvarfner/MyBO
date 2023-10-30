@@ -1,0 +1,10 @@
+seed: 42
+defaults:
+  - model: singletask
+  - acq_opt: medium
+  - acquisition: lognei
+  - benchmark: branin
+
+experiment_group: test
+experiment_name: ${benchmark.name}_${algorithm.name}${algorithm.fit.name}_run_${seed}
+result_path: ./../../../results/${experiment_group}/${benchmark.name}/${acq.name}${algorithm.name}_${seed}
