@@ -27,5 +27,6 @@ def main(cfg : DictConfig) -> None:
         overwrite_existing_experiment=True
     )
 
+    
 if __name__ == '__main__':
     main()
