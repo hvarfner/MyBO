@@ -1,10 +1,13 @@
 seed: 42
+
+warm_start: false
+experiment_group: test
+experiment_name: ${task.name}_${acq.name}_run_${seed}
+result_path: ./../../../results/${experiment_group}/${task.name}/${acq.name}${acq.name}_${seed}
+
 defaults:
   - model: singletask
-  - acq_opt: medium
-  - acquisition: lognei
-  - benchmark: branin
-
-experiment_group: test
-experiment_name: ${benchmark.name}_${algorithm.name}${algorithm.fit.name}_run_${seed}
-result_path: ./../../../results/${experiment_group}/${benchmark.name}/${acq.name}${algorithm.name}_${seed}
+  - acqopt: medium
+  - acq: lognei
+  - task: branin
+  - init: sobol

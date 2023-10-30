@@ -1,0 +1,12 @@
+name: branin
+parameters:
+  x1: 
+    bounds: [-5, 10]
+    type: range
+  x2: 
+    bounds: [0, 15]
+    type: range
+    value_type: int
+
+objectives:
+  y1 y2
