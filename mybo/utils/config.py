@@ -12,6 +12,7 @@ def parse_parameters(parameter_cfg: Dict) -> Dict:
         per_param_dict['bounds'] = list(properties.bounds)
         per_param_dict['type'] = properties.type
         per_param_dict['value_type'] = properties.get('value_type', 'float')
+        per_param_dict['log_scale'] = properties.get('log_scale', False)        
 
         # TODO Convert to float if range?
         parameter_list.append(per_param_dict)

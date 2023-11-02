@@ -7,5 +7,6 @@ parameters:
     bounds: [0, 15]
     type: range
 
+constraints: [x2 >= x1, x1 + x2 >= 5]
 objectives:
   y1 y2
