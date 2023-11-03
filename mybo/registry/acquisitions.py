@@ -1,5 +1,7 @@
 from typing import Dict
-
+from botorch.acquisition import (
+    qExpectedImprovement,
+)
 from botorch.acquisition.logei import (
     qLogNoisyExpectedImprovement,
 )
@@ -8,8 +10,9 @@ from botorch.acquisition.multi_objective import (
 )
 
 ACQUISITION_REGISTRY = {
-    'lognei': qLogNoisyExpectedImprovement,
-    'nehvi': qNoisyExpectedHypervolumeImprovement,
+    'LogNEI': qLogNoisyExpectedImprovement,
+    'NEHVI': qNoisyExpectedHypervolumeImprovement,
+    'EI': qExpectedImprovement,
 }
 
 

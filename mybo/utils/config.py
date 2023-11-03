@@ -27,8 +27,8 @@ def parse_objectives(objective_cfg: Union[Dict, str]) -> Dict:
             objectives[objective_name] = ObjectiveProperties(minimize=False)
 
     # otherwise, a dict needs to be passed in
-    elif isinstance(objective_cfg, dict):
-        for obj_name, properties in objective_cfg.items():
+    elif isinstance(objective_cfg, (dict, DictConfig)):
+        for objective_name, properties in objective_cfg.items():
             objectives[objective_name] = ObjectiveProperties(
                 minimize=False,
                 threshold=properties.get('threshold', None),
