@@ -21,10 +21,9 @@ def evaluate_test_function(
     Returns:
         _type_: _description_
     """    
-    time.sleep(1)
     x = torch.tensor(
         [[parameters[f"x{i+1}"] for i in range(len(parameters))]])
-    print(x)
+
     if seed is not None:
         eval = test_function(x, seed=seed)
     else:

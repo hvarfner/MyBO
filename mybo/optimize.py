@@ -1,7 +1,7 @@
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from interface import get_designs, register_results, get_or_instantiate, get_trial_subset
+from interface import get_designs, register_results, get_or_instantiate
 from tasks.registry import get_task
 
 # TODO consider transferring data between clients
