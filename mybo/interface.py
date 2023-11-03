@@ -6,6 +6,7 @@ from omegaconf import DictConfig
 from utils.config import parse_parameters, parse_objectives
 from registry.strategy import get_generation_strategy
 
+from ax.core.base_trial import TrialStatus
 from ax.service.ax_client import AxClient
 from utils.saving import save_run, AX_NAME, suppress_stdout_stderr
 
@@ -62,7 +63,7 @@ def get_designs(
     client: Union[AxClient, None] = None, 
     client_path: Union[str, None] = None,
     save: bool = True
-) -> List[Tuple[Dict[str, float], str]]:
+) -> List[Tuple[Dict[str, float], int]]:
     # (trial_index, {x_1: 0.5, x_2: 2.3, ...})
     if client is None:
         client = _get_client(client_path + AX_NAME)
@@ -80,9 +81,9 @@ def get_designs(
 
 
 def register_results(
-    results: List[Tuple[Dict[str, float], str]],
-    client: Union[AxClient, None] = None, 
+    results: List[Tuple[Dict[str, float], int]],
     client_path: Union[str, None] = None,
+    client: Union[AxClient, None] = None, 
     save: bool = True,
 ) -> None:
     # (trial_index, {coul_eff: 0.5})
@@ -98,14 +99,40 @@ def register_results(
             save_run(client_path, client)
 
 
-def cancel_trial(
-    trial_index: str, 
-    client: Union[AxClient, None] = None, 
+def cancel_trials(
+    trial_index: Union[int, List[int]], 
     client_path: Union[str, None] = None,
+    client: Union[AxClient, None] = None, 
     save: bool = True,
 ) -> None:
     if client is None:
         client = _get_client(client_path + AX_NAME)
-    client.log_trial_failure(trial_index=trial_index)
+    if isinstance(trial_index, str):
+        client.log_trial_failure(trial_index=trial_index)
+    elif isinstance(trial_index, list):
+        for idx in trial_index:
+            client.log_trial_failure(trial_index=idx)
+    else:
+        raise ValueError(f'Trial index if of invalid type {type(trial_index)}'
+                          'Must be int or list of ints.')
+    
     if save:
         save_run(client_path, client)
+
+
+def get_trial_subset(
+    subset: str = "running", # running, completed, failed  etc.
+    client_path: Union[str, None] = None,
+    client: Union[AxClient, None] = None, 
+) -> List[Tuple[Dict[str, float], int]]:
+    if client is None:
+        client = _get_client(client_path + AX_NAME)
+
+    trials = client.experiment.trials
+    running_trials = [] 
+    for t_idx, value in trials.items():
+        if value.status == getattr(TrialStatus, subset.upper()):
+            running_trials.append((client.get_trial_parameters(t_idx), t_idx))
+
+    return running_trials
+# get latest batch
