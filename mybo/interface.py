@@ -41,7 +41,11 @@ def _instantiate_client(cfg: DictConfig) -> AxClient:
     ax_client = AxClient(generation_strategy=generation_strategy)
     ax_client.create_experiment(
         name=cfg.experiment_name,
-        parameters=parse_parameters(cfg.task.parameters),
+        parameters=parse_parameters(
+            cfg.task.parameters, 
+            cfg.task.get("dim", 0), 
+            cfg.task.get("embedding", 0)
+        ),
         objectives=parse_objectives(cfg.task.objectives),
         parameter_constraints=cfg.task.get('constraints', None),
         overwrite_existing_experiment=True

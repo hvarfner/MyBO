@@ -16,18 +16,20 @@ def evaluate_test_function(
 
     Args:
         parameters (Dict[str, float]): dict of parameters and their associated value.
-        seed (int, optional): _description_. If returned with noise, fix the noise randomness.
+        seed (int, optional): If returned with noise, fix the noise randomness.
 
     Returns:
         _type_: _description_
-    """    
+    """
     x = torch.tensor(
-        [[parameters[f"x{i+1}"] for i in range(len(parameters))]])
+        [[parameters[f"x{i+1}"] for i in range(test_function.dim)]])
 
     if seed is not None:
         eval = test_function(x, seed=seed)
     else:
         eval = test_function(x)
+    
+    noiseless_eval = test_function.evaluate_true(x)
 
     return {f'y{m + 1}': e.item() for m, e in enumerate(eval.T)}, trial_index
     

@@ -11,7 +11,7 @@ SYNTHETIC_REGISTRY = {tf[0]: tf[1] for tf in getmembers(tfs, isclass)}
 REAL_REGISTRY = {}
 BENCHSUITE_REGISTRY = {}
 
-SYN_KWARGS = {'negate': True}
+SYN_KWARGS = {'negate': True, 'noise_std': 0.0}
 
 def _get_test_function(function_name: str, **kwargs: Any):
     return SYNTHETIC_REGISTRY[function_name](**kwargs)
@@ -19,11 +19,16 @@ def _get_test_function(function_name: str, **kwargs: Any):
 
 def get_task(cfg: DictConfig):
     function_name = cfg.name
-    kwargs =  OmegaConf.to_container(cfg).get('kwargs', {})
-    if function_name in SYNTHETIC_REGISTRY:
-        SYN_KWARGS.update(kwargs)
-    
+    cfg = OmegaConf.to_container(cfg)
+    if hasattr(cfg, "dim"):
+        SYN_KWARGS["dim"] = cfg.pop("dim")
+    for key, val in cfg.items():
+        if key in SYN_KWARGS:
+            SYN_KWARGS[key] = val
+            
+    if function_name in SYNTHETIC_REGISTRY:    
         objective = _get_test_function(function_name=function_name, **SYN_KWARGS) 
+
         return partial(
             evaluate_test_function, objective)
     else:
