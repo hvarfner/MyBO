@@ -1,5 +1,5 @@
 from typing import Dict
-import time
+
 import torch
 from botorch.test_functions import SyntheticTestFunction
 

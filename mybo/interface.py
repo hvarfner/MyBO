@@ -3,12 +3,12 @@ import warnings
 
 from typing import Union, List, Dict, Tuple
 from omegaconf import DictConfig
-from utils.config import parse_parameters, parse_objectives
-from registry.strategy import get_generation_strategy
+from mybo.utils.config import parse_parameters, parse_objectives
+from mybo.registry.strategy import get_generation_strategy
 
 from ax.core.base_trial import TrialStatus
 from ax.service.ax_client import AxClient
-from utils.saving import save_run, AX_NAME, suppress_stdout_stderr
+from mybo.utils.saving import save_run, AX_NAME, suppress_stdout_stderr
 
 # TODO move to interface.py
 
