@@ -1,0 +1,10 @@
+name: Ackley
+dim: 4
+embedding: 25
+parameters:
+  _all: 
+    bounds: [-32.768, 32.768]
+    type: range
+
+objectives: 
+  y1
