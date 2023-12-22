@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional, Tuple
 
 import torch
 from botorch.test_functions import SyntheticTestFunction
@@ -10,8 +10,8 @@ def evaluate_test_function(
     test_function: SyntheticTestFunction, 
     parameters: Dict[str, float], 
     trial_index: str, 
-    seed: int=None
-    ) -> Dict[str, float]:
+    seed: Optional[int] = 0,
+) -> Tuple[Dict[str, float], str]:
     """All test functions simply take x_1, ..., x_n as input and output y1, ..., y_m.
 
     Args:
@@ -23,13 +23,19 @@ def evaluate_test_function(
     """
     x = torch.tensor(
         [[parameters[f"x{i+1}"] for i in range(test_function.dim)]])
-
-    if seed is not None:
-        eval = test_function(x, seed=seed)
-    else:
-        eval = test_function(x)
+    eval = test_function(x)
+    # flip the sign if negated
     
-    noiseless_eval = test_function.evaluate_true(x)
-
-    return {f'y{m + 1}': e.item() for m, e in enumerate(eval.T)}, trial_index
+    noiseless_eval = (-1) ** test_function.negate * test_function.evaluate_true(x)
+    output_dict = {f'y{m + 1}': e.item() for m, e in enumerate(eval.T)}
+    output_dict.update({f'f{m + 1}': e.item() for m, e in enumerate(noiseless_eval.T)})
+    return output_dict, trial_index
     
+
+def evaluate_benchsuite_funciton(
+    function: callable,
+    parameters: Dict[str, float], 
+    trial_index: str, 
+    seed: Optional[int] = 0,
+) -> Tuple[Dict[str, float], str]:
+    pass

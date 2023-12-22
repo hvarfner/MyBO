@@ -4,12 +4,15 @@ from functools import partial
 
 from omegaconf import OmegaConf, DictConfig
 import botorch.test_functions as tfs
-from tasks.callables import evaluate_test_function
+from tasks.callables import (
+    evaluate_test_function,
+    evaluate_benchsuite_funciton,
+)
 
 
 SYNTHETIC_REGISTRY = {tf[0]: tf[1] for tf in getmembers(tfs, isclass)}
-REAL_REGISTRY = {}
-BENCHSUITE_REGISTRY = {}
+REAL_REGISTRY = {} # TODO a generic callable for arbitrary tasks
+BENCHSUITE_REGISTRY = {} # TODO get all the tasks from benchsuite (in their containers)
 
 SYN_KWARGS = {'negate': True, 'noise_std': 0.0}
 
@@ -22,6 +25,8 @@ def get_task(cfg: DictConfig):
     cfg = OmegaConf.to_container(cfg)
     if hasattr(cfg, "dim"):
         SYN_KWARGS["dim"] = cfg.pop("dim")
+
+    # TODO benchmark-dependent kwargs. Bundle together more
     for key, val in cfg.items():
         if key in SYN_KWARGS:
             SYN_KWARGS[key] = val
@@ -31,5 +36,8 @@ def get_task(cfg: DictConfig):
 
         return partial(
             evaluate_test_function, objective)
+    
+    elif function_name in BENCHSUITE_REGISTRY:
+        objective = evaluate_benchsuite_funciton(function_name=function_name, **BS_KWARGS)
     else:
         raise ValueError(f'Task {function_name} does not yet exist, or is missing a callable.')
