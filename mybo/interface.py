@@ -50,13 +50,39 @@ def _instantiate_client(cfg: DictConfig) -> AxClient:
         parameter_constraints=cfg.task.get('constraints', None),
         overwrite_existing_experiment=True
     )
+    cfg.save_path = modify_save_path(cfg)
     save_run(cfg.save_path, ax_client)
     return ax_client
 
+def modify_save_path(cfg: DictConfig):
+    # gets all the attributes of each config that should be appended to the save
+    task_name, algo_name, seed_name = cfg.save_path.split("/")[-3:]
+    rest_of_name = cfg.save_path.split("/")[:-3]
+    cfgitem_appends = {}
+    for key, val in cfg.items():
+        if isinstance(val, DictConfig):
+            cfgitem_appends[key] = val.get("appends")
+
+    # the task attribute should be added to the outermost dir
+    if cfgitem_appends["task"] is not None:
+        attr_names = [attr + str(cfg.task[attr]) for attr in 
+                      cfgitem_appends["task"].strip().split(',')]
+        task_name = '-'.join([task_name] + attr_names)
+    
+    del cfgitem_appends["task"]
+        # the task attribute should be added to the outermost dir
+    for key, val in cfgitem_appends.items():
+        # TODO could consider not throwing an error if the appended
+        # attribute is missing from the config
+        if val is not None:
+            attr_names = [attr + str(cfg[key][attr]) for attr in 
+                        cfgitem_appends[key].strip().split(',')]
+            algo_name = '-'.join([algo_name] + attr_names)
+
+    full_name = '/'.join(rest_of_name + [task_name, algo_name, seed_name])
+    return full_name
 
 def _get_client(client_path: str):
-    #with warnings.catch_warnings():
-    #    warnings.simplefilter("ignore", category=FutureWarning)
     with suppress_stdout_stderr():
         ax_client = AxClient.load_from_json_file(client_path)
     return ax_client

@@ -9,7 +9,6 @@ def parse_parameters(
     dim: Optional[int] = 0, 
     embedding: Optional[int] = 0,
 ) -> Dict:
-    breakpoint()
     parameter_list = []
     if len(parameter_cfg) == 1 and "_all" in parameter_cfg.keys():
         properties = parameter_cfg["_all"]
