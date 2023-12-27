@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Callable
 
 import torch
 from botorch.test_functions import SyntheticTestFunction
@@ -11,6 +11,7 @@ def evaluate_test_function(
     parameters: Dict[str, float], 
     trial_index: str, 
     seed: Optional[int] = 0,
+    aux_function: Optional[Callable] = None, # TODO implement this
 ) -> Tuple[Dict[str, float], str]:
     """All test functions simply take x_1, ..., x_n as input and output y1, ..., y_m.
 

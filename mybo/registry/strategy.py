@@ -30,6 +30,9 @@ def get_generation_strategy(
             model=model_enum,
             num_trials=budget,
             model_kwargs={
+                # ensure we don't model the tracking metrics that are returned
+                # witht the objecive 
+                "fit_tracking_metrics": False,
                 "surrogate": Surrogate(
                             botorch_model_class=MODEL_REGISTRY[model_cfg.name],
                             model_options=parse_model_options(model_cfg.get('kwargs'))

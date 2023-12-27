@@ -13,7 +13,8 @@ def main(cfg : DictConfig) -> None:
     
     ax_client = get_or_instantiate(cfg)
     # TODO either entire loop or single eval/call? cfg.closed_loop/open_loop?
-    objective = get_task(cfg.task)
+    # ensure the auxilliary task (if any) gets retrieved here as well
+    objective = get_task(cfg)
     
     for opt_round in range(cfg.max_rounds):
         designs = get_designs(max_num_designs=cfg.batch_size, client_path=cfg.save_path, save=cfg.save)

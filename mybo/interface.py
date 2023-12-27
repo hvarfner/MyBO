@@ -1,7 +1,7 @@
 import os
 import warnings
 
-from typing import Union, List, Dict, Tuple
+from typing import Union, List, Dict, Tuple, Optional
 from omegaconf import DictConfig
 from mybo.utils.config import parse_parameters, parse_objectives
 from mybo.registry.strategy import get_generation_strategy
@@ -48,7 +48,7 @@ def _instantiate_client(cfg: DictConfig) -> AxClient:
         ),
         objectives=parse_objectives(cfg.task.objectives),
         parameter_constraints=cfg.task.get('constraints', None),
-        overwrite_existing_experiment=True
+        overwrite_existing_experiment=True,
     )
     cfg.save_path = modify_save_path(cfg)
     save_run(cfg.save_path, ax_client)
@@ -112,9 +112,9 @@ def get_designs(
 
 def register_results(
     results: List[Tuple[Dict[str, float], int]],
-    client_path: Union[str, None] = None,
-    client: Union[AxClient, None] = None, 
-    save: bool = True,
+    client_path: Optional[Union[str, None]] = None,
+    client: Optional[Union[AxClient, None]] = None, 
+    save: Optional[bool] = True,
 ) -> None:
     # (trial_index, {coul_eff: 0.5})
     # TODO save run
