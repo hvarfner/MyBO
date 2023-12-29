@@ -105,7 +105,7 @@ def get_designs(
             warnings.simplefilter("ignore", category=FutureWarning)
             trial = client.get_next_trial()
         batch_array.append((trial))
-        if save:
+        if save:    
             save_run(client_path, client)
     return batch_array
 

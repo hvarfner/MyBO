@@ -10,20 +10,20 @@ from botorch.acquisition.multi_objective import (
     qNoisyExpectedHypervolumeImprovement,
 )
 from botorch.acquisition.bayesian_active_learning import (
-    BayesianActiveLearningByDisagreement,
-    StatisticalDistanceActiveLearning,
+    qBayesianActiveLearningByDisagreement,
+    qStatisticalDistanceActiveLearning,
 )
 from botorch.acquisition.scorebo import (
-    SelfCorrectingBayesianOptimization
+    qSelfCorrectingBayesianOptimization
 )
 
 ACQUISITION_REGISTRY = {
     'LogNEI': qLogNoisyExpectedImprovement,
     'NEHVI': qNoisyExpectedHypervolumeImprovement,
     'EI': qExpectedImprovement,
-    'BALD': BayesianActiveLearningByDisagreement,
-    'SAL': StatisticalDistanceActiveLearning,
-    'SCoreBO': SelfCorrectingBayesianOptimization,
+    'BALD': qBayesianActiveLearningByDisagreement,
+    'SAL': qStatisticalDistanceActiveLearning,
+    'SCoreBO': qSelfCorrectingBayesianOptimization,
 
 }
 
