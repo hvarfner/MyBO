@@ -37,7 +37,7 @@ def get_task(cfg: DictConfig) -> Tuple[Callable, Callable]:
     function_name = cfg.name
     
     cfg = OmegaConf.to_container(cfg)
-    if hasattr(cfg, "dim"):
+    if "dim" in cfg.keys():
         SYN_KWARGS["dim"] = cfg.pop("dim")
 
     # TODO benchmark-dependent kwargs. Bundle together more

@@ -29,7 +29,11 @@ def get_or_instantiate(cfg: DictConfig) -> AxClient:
 
 def _instantiate_client(cfg: DictConfig) -> AxClient:
     # If we enter a path to a run to resume, try and do so (should be a JSON)
-    num_dimensions = len(cfg.task.parameters)
+    num_dimensions = len(parse_parameters(
+            cfg.task.parameters, 
+            cfg.task.get("dim", 0), 
+            cfg.task.get("embedding", 0)
+    ))
     generation_strategy = get_generation_strategy(
         model_cfg=cfg.model, 
         acq_cfg=cfg.acq, 
