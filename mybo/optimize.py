@@ -17,9 +17,14 @@ def main(cfg : DictConfig) -> None:
     objective = get_task(cfg)
     
     for opt_round in range(cfg.max_rounds):
-        designs = get_designs(max_num_designs=cfg.batch_size, client_path=cfg.save_path, save=cfg.save)
+        designs = get_designs(
+            max_num_designs=cfg.batch_size, 
+            client=ax_client, 
+            client_path=cfg.save_path, 
+            save=cfg.save
+        )
         results = [objective(index, parameters) for index, parameters in designs]
-        register_results(results, client_path=cfg.save_path, save=cfg.save)
+        register_results(results, client=ax_client, client_path=cfg.save_path, save=cfg.save)
 
 
 if __name__ == '__main__':

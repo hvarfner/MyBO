@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Tuple, Callable
+from typing import Dict, Optional, Tuple, List
 
 import torch
 from botorch.test_functions import SyntheticTestFunction
@@ -11,7 +11,7 @@ def evaluate_test_function(
     parameters: Dict[str, float], 
     trial_index: str, 
     seed: Optional[int] = 0,
-    aux_function: Optional[Callable] = None, # TODO implement this
+    aux_function: Optional[str] = None, # TODO implement this
 ) -> Tuple[Dict[str, float], str]:
     """All test functions simply take x_1, ..., x_n as input and output y1, ..., y_m.
 
@@ -30,6 +30,9 @@ def evaluate_test_function(
     noiseless_eval = (-1) ** test_function.negate * test_function.evaluate_true(x)
     output_dict = {f'y{m + 1}': e.item() for m, e in enumerate(eval.T)}
     output_dict.update({f'f{m + 1}': e.item() for m, e in enumerate(noiseless_eval.T)})
+
+    # evaluate test RMSE, test MLL
+    
     return output_dict, trial_index
     
 

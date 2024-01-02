@@ -55,7 +55,8 @@ def _instantiate_client(cfg: DictConfig) -> AxClient:
         overwrite_existing_experiment=True,
     )
     cfg.save_path = modify_save_path(cfg)
-    save_run(cfg.save_path, ax_client)
+    if cfg.save:
+        save_run(cfg.save_path, ax_client)
     return ax_client
 
 def modify_save_path(cfg: DictConfig):

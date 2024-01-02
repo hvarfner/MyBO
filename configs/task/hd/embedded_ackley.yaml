@@ -1,6 +1,7 @@
 name: Ackley
 dim: 4
 embedding: 25
+appends: dim,embedding
 parameters:
   _all: 
     bounds: [-32.768, 32.768]
