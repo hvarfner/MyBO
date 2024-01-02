@@ -23,7 +23,11 @@ def main(cfg : DictConfig) -> None:
             client_path=cfg.save_path, 
             save=cfg.save
         )
-        results = [objective(index, parameters) for index, parameters in designs]
+        if cfg.aux_task is not None:
+            results = [objective(index, parameters, ax_client, cfg.aux_task)
+                        for index, parameters in designs]
+        else:
+            results = [objective(index, parameters) for index, parameters in designs]
         register_results(results, client=ax_client, client_path=cfg.save_path, save=cfg.save)
 
 

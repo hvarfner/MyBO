@@ -1,17 +1,20 @@
 from typing import Dict, Optional, Tuple, List
 
 import torch
+from ax.service.ax_client import AxClient
 from botorch.test_functions import SyntheticTestFunction
+
+from mybo.tasks.aux_objective import evaluate_mll 
 
 
 # TODO make a registry for these
-
+NUM_MLL_POINTS = 2500
 def evaluate_test_function(
     test_function: SyntheticTestFunction, 
     parameters: Dict[str, float], 
     trial_index: str, 
-    seed: Optional[int] = 0,
-    aux_function: Optional[str] = None, # TODO implement this
+    ax_client: Optional[AxClient] = None,
+    aux_objectives: Optional[List[str]] = ["noiseless_eval"], # TODO implement this
 ) -> Tuple[Dict[str, float], str]:
     """All test functions simply take x_1, ..., x_n as input and output y1, ..., y_m.
 
@@ -29,8 +32,13 @@ def evaluate_test_function(
     
     noiseless_eval = (-1) ** test_function.negate * test_function.evaluate_true(x)
     output_dict = {f'y{m + 1}': e.item() for m, e in enumerate(eval.T)}
-    output_dict.update({f'f{m + 1}': e.item() for m, e in enumerate(noiseless_eval.T)})
 
+    if "noiseless_eval" in aux_objectives:
+        output_dict.update({f'f{m + 1}': e.item() for m, e in enumerate(noiseless_eval.T)})
+
+    elif "mll" in aux_objectives:
+        mll = evaluate_mll(ax_client, test_function, NUM_MLL_POINTS)
+        output_dict.update({"MLL": mll})
     # evaluate test RMSE, test MLL
     
     return output_dict, trial_index
