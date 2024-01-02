@@ -1,6 +1,6 @@
 name: fullybayesian
 kwargs:
-  prior: gamma
+  prior: saas
 
 fit_kwargs:
   warmup_steps: 128

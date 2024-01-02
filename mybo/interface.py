@@ -55,8 +55,7 @@ def _instantiate_client(cfg: DictConfig) -> AxClient:
         overwrite_existing_experiment=True,
     )
     cfg.save_path = modify_save_path(cfg)
-    if cfg.save:
-        save_run(cfg.save_path, ax_client)
+    save_run(cfg.save_path, ax_client, save_client=cfg.save)
     return ax_client
 
 def modify_save_path(cfg: DictConfig):
@@ -110,8 +109,7 @@ def get_designs(
             warnings.simplefilter("ignore", category=FutureWarning)
             trial = client.get_next_trial()
         batch_array.append((trial))
-        if save:    
-            save_run(client_path, client)
+        save_run(client_path, client, save_client=save)
     return batch_array
 
 
@@ -130,8 +128,7 @@ def register_results(
         # for some reason, ax wants it the other way around when it's a result...
         # i.e. trial index first
         client.complete_trial(result[1], result[0])
-        if save:
-            save_run(client_path, client)
+        save_run(client_path, client, save_client=save)
 
 
 def cancel_trials(
@@ -151,8 +148,7 @@ def cancel_trials(
         raise ValueError(f'Trial index if of invalid type {type(trial_index)}'
                           'Must be int or list of ints.')
     
-    if save:
-        save_run(client_path, client)
+    save_run(client_path, client, save_client=save)
 
 
 def get_trial_subset(

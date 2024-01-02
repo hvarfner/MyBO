@@ -37,7 +37,5 @@ def evaluate_mll(ax_client: AxClient, objective: SyntheticTestFunction, num_test
         res_mll += mll(preds, norm_yvalid[low:high])
     res_mll /= NUM_SPLITS
     mean_mll = res_mll.mean().item()
-    if len(gp.train_inputs[0]) > 40:
-        breakpoint()
     #res_rmse = torch.pow(output - mu_true, 2).mean().item() # TODO add a square root?
     return mean_mll
