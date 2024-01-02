@@ -36,7 +36,7 @@ def evaluate_test_function(
     if "noiseless_eval" in aux_objectives:
         output_dict.update({f'f{m + 1}': e.item() for m, e in enumerate(noiseless_eval.T)})
 
-    elif "mll" in aux_objectives:
+    if "mll" in aux_objectives:
         mll = evaluate_mll(ax_client, test_function, NUM_MLL_POINTS)
         output_dict.update({"MLL": mll})
     # evaluate test RMSE, test MLL
