@@ -26,7 +26,7 @@ FB_PRIOR_REGISTRY = {
 }
 
 def parse_model_options(kwargs: Optional[Dict]) -> Dict:
-    kwargs = OmegaConf.to_container(kwargs) or {}
+    kwargs = OmegaConf.to_container(kwargs) if kwargs is not None else {}
     if "prior" in kwargs.keys():
         prior_name = kwargs.pop("prior")
         kwargs["pyro_model"] = FB_PRIOR_REGISTRY[prior_name]()
