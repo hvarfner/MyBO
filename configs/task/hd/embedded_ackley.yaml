@@ -1,6 +1,7 @@
 name: Ackley
 dim: 4
 embedding: 25
+noise_std: 1
 appends: dim,embedding
 parameters:
   _all: 
