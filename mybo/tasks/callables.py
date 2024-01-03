@@ -4,7 +4,7 @@ import torch
 from ax.service.ax_client import AxClient
 from botorch.test_functions import SyntheticTestFunction
 
-from mybo.tasks.aux_objective import evaluate_mll 
+from mybo.tasks.aux_objective import evaluate_mll, get_best_guess
 
 
 # TODO make a registry for these
@@ -41,6 +41,9 @@ def evaluate_test_function(
         output_dict.update({"MLL": mll})
     # evaluate test RMSE, test MLL
     
+    if "best_guess" in aux_objectives:
+        best_guess = get_best_guess(ax_client, test_function)
+        output_dict.update({"Best Guess": best_guess})
     return output_dict, trial_index
     
 

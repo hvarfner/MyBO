@@ -39,3 +39,25 @@ def evaluate_mll(ax_client: AxClient, objective: SyntheticTestFunction, num_test
     mean_mll = res_mll.mean().item()
     #res_rmse = torch.pow(output - mu_true, 2).mean().item() # TODO add a square root?
     return mean_mll
+
+
+def get_best_guess(ax_client: AxClient, objective: SyntheticTestFunction):
+    try:
+        model = ax_client.get_model_predictions()
+    except NotImplementedError:
+        return -1e6
+    sobol = SobolEngine(len(objective.bounds.T), scramble=True, seed=42)
+    gp = ax_client.generation_strategy.model.model.surrogate.model
+
+    from botorch.acquisition import PosteriorMean
+    from botorch.optim import optimize_acqf
+    post_mean = PosteriorMean(gp)
+    best_guess, acqval = optimize_acqf(
+        acq_function=post_mean, 
+        bounds=objective.bounds,
+        raw_samples=8192,
+        num_restarts=20,
+        q=1,
+        options={"sample_around_best": True, "batch_limit": 256},
+    )
+    return -objective.evaluate_true(best_guess).item()
