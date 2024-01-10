@@ -8,7 +8,7 @@ save: True
 save_path: results/${experiment_group}/${task.name}/${acq.name}/seed${seed}
 batch_size: 1
 max_rounds: 0
-aux_task: [noiseless_eval,mll]
+aux_task: []
 
 defaults:
   - model: singletask

@@ -10,7 +10,7 @@ parameters:
 
 objectives:
   y1: 
-    threshold: -18
+    threshold: -4
   y2: 
-    threshold: -6
+    threshold: -10
   

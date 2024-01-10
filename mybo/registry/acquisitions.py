@@ -17,7 +17,9 @@ from botorch.acquisition.bayesian_active_learning import (
 from botorch.acquisition.scorebo import (
     qSelfCorrectingBayesianOptimization
 )
-
+from botorch.acquisition.diversity import (
+    qDistanceWeightedImprovementOverThreshold
+)
 ACQUISITION_REGISTRY = {
     'LogNEI': qLogNoisyExpectedImprovement,
     'NEHVI': qNoisyExpectedHypervolumeImprovement,
@@ -26,8 +28,9 @@ ACQUISITION_REGISTRY = {
     'BQBC': qBayesianQueryByComittee,
     'SAL': qStatisticalDistanceActiveLearning,
     'SCoreBO': qSelfCorrectingBayesianOptimization,
+    'DWIT': qDistanceWeightedImprovementOverThreshold,
 }
 
 
 def parse_acquisition_options(kwargs: Dict) -> Dict:
-    return {}
+    return kwargs

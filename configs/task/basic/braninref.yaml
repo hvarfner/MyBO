@@ -8,5 +8,5 @@ parameters:
     type: range
 
 objectives:
-  y1
-  
+  y1: 
+    threshold: -18

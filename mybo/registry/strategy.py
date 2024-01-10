@@ -6,9 +6,9 @@ from ax.models.torch.botorch_modular.surrogate import Surrogate
 from ax.modelbridge.registry import Models
 from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
 
-from registry.models import MODEL_REGISTRY, parse_model_options
-from registry.acquisitions import ACQUISITION_REGISTRY, parse_acquisition_options
-from registry.initialization import compute_doe
+from mybo.registry.models import MODEL_REGISTRY, parse_model_options
+from mybo.registry.acquisitions import ACQUISITION_REGISTRY, parse_acquisition_options
+from mybo.registry.initialization import compute_doe
 
 def get_generation_strategy(
         model_cfg: Dict, 
