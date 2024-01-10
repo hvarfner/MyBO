@@ -6,9 +6,9 @@ from ax.models.torch.botorch_modular.surrogate import Surrogate
 from ax.modelbridge.registry import Models
 from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
 
-from registry.models import MODEL_REGISTRY, parse_model_options
-from registry.acquisitions import ACQUISITION_REGISTRY, parse_acquisition_options
-from registry.initialization import compute_doe
+from mybo.registry.models import MODEL_REGISTRY, parse_model_options
+from mybo.registry.acquisitions import ACQUISITION_REGISTRY, parse_acquisition_options
+from mybo.registry.initialization import compute_doe
 
 def get_generation_strategy(
         model_cfg: Dict, 
@@ -20,11 +20,8 @@ def get_generation_strategy(
     ) -> Dict:
         
     model_enum = Models.BOTORCH_MODULAR
-    init_step = GenerationStep(
-        Models.SOBOL,
-        num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
-    )
-    
+
+        
     bo_step = GenerationStep(
             # model=model_enum,
             model=model_enum,
@@ -43,6 +40,13 @@ def get_generation_strategy(
                 },
             },
         )
-    steps = [init_step, bo_step]
+    if init_cfg.num_doe > 0:
+        init_step = GenerationStep(
+            Models.SOBOL,
+            num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
+        )
+        steps = [init_step, bo_step]
+    else:
+        steps = [bo_step]
     return GenerationStrategy(steps=steps)
     

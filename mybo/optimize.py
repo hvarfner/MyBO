@@ -12,6 +12,7 @@ def main(cfg : DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
     
     ax_client = get_or_instantiate(cfg)
+
     # TODO either entire loop or single eval/call? cfg.closed_loop/open_loop?
     objective = get_task(cfg.task)
     

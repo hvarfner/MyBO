@@ -4,7 +4,7 @@ from mybo.interface import (
     get_or_instantiate, 
     get_trial_subset,
 )
-from mybo.tasks import get_task
+from mybo.tasks.registry import get_task
 
 
 __all__ = [
