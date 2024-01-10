@@ -53,5 +53,16 @@ def get_task(cfg: DictConfig) -> Tuple[Callable, Callable]:
     elif function_name in BENCHSUITE_REGISTRY:
         objective = evaluate_benchsuite_funciton(function_name=function_name, **BS_KWARGS)
     else:
+<<<<<<< HEAD
         raise ValueError(f'Task {function_name} does not yet exist, or is missing a callable.')
     
+=======
+        def obj(X, idx):
+            return {
+                "coulombic_eff": sum(list(X.values())),
+                "discharge_energy_density": -0.01 * sum(list(X.values())),
+                "aq_to_non_aq": sum(list(X.values())[0:3]) - sum(list(X.values())[3:]),
+            }, idx
+        return obj
+        raise ValueError(f'Task {function_name} does not yet exist, or is missing a callable.')
+>>>>>>> battery

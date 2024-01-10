@@ -20,11 +20,8 @@ def get_generation_strategy(
     ) -> Dict:
         
     model_enum = Models.BOTORCH_MODULAR
-    init_step = GenerationStep(
-        Models.SOBOL,
-        num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
-    )
-    
+
+        
     bo_step = GenerationStep(
             # model=model_enum,
             model=model_enum,
@@ -47,6 +44,13 @@ def get_generation_strategy(
                 },
             },
         )
-    steps = [init_step, bo_step]
+    if init_cfg.num_doe > 0:
+        init_step = GenerationStep(
+            Models.SOBOL,
+            num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
+        )
+        steps = [init_step, bo_step]
+    else:
+        steps = [bo_step]
     return GenerationStrategy(steps=steps)
     

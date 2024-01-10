@@ -3,18 +3,20 @@ import warnings
 
 from typing import Union, List, Dict, Tuple, Optional
 from omegaconf import DictConfig
-from mybo.utils.config import parse_parameters, parse_objectives
-from mybo.registry.strategy import get_generation_strategy
+import pandas as pd
 
 from ax.core.base_trial import TrialStatus
 from ax.service.ax_client import AxClient
 from mybo.utils.saving import save_run, AX_NAME, suppress_stdout_stderr
 
+from mybo.utils.config import parse_parameters, parse_objectives
+from mybo.registry.strategy import get_generation_strategy
 # TODO move to interface.py
 
 def get_or_instantiate(cfg: DictConfig) -> AxClient:
     if len(cfg.resume_path) > 0:
         client = _get_client(cfg.resume_path)
+        save_run(cfg.save_path, client)
     elif os.path.isfile(cfg.save_path + AX_NAME):
         if cfg.override:
             client = _instantiate_client(cfg)
@@ -166,4 +168,26 @@ def get_trial_subset(
             running_trials.append((client.get_trial_parameters(t_idx), t_idx))
 
     return running_trials
-# get latest batch
+
+
+def append_to_client(client: AxClient, df: pd.DataFrame, path: str):
+    param_names = list(client.experiment.parameters.keys())
+    obj_names = list(client.experiment.metrics.keys())
+    non_metadata = obj_names + param_names
+    
+    for idx in range(len(df)):
+        param_data = df.loc[idx, param_names].values
+        obj_data = df.loc[idx, obj_names].values
+        metadata = df.loc[idx, [col not in non_metadata for col in df.columns]]
+    
+        parameter_dict = {col: param for col, param in zip(param_names, param_data)}
+        obj_dict = {obj: param for obj, param in zip(obj_names, obj_data)}
+        output, trial_index = client.attach_trial(parameter_dict)
+        if metadata.trial_status == "COMPLETED":
+            client.complete_trial(trial_index, obj_dict)
+        elif metadata.trial_status == "FAILED":
+            client.log_trial_failure(trial_index=trial_index)
+        elif metadata.trial_status == "RUNNING":
+            print(f"Trial {trial_index} is still considered running.")
+    
+    save_run(save_path=path.strip('ax_client.json'), ax_client=client)
