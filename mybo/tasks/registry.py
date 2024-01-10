@@ -6,7 +6,7 @@ from omegaconf import OmegaConf, DictConfig
 
 from ax.service.ax_client import AxClient
 import botorch.test_functions as tfs
-from tasks.callables import (
+from mybo.tasks.callables import (
     evaluate_test_function,
     evaluate_benchsuite_funciton,
 )
