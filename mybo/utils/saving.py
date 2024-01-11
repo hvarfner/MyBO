@@ -8,7 +8,7 @@ from ax.service.ax_client import AxClient
 AX_NAME = '_ax_client.json'
 RUN_NAME = '_run.csv'
 
-def save_run(save_path: str, ax_client: AxClient, save_client: bool = False) -> None:
+def save_run(save_path: str, ax_client: AxClient, save_client: bool = True) -> None:
     os.makedirs(dirname(save_path), exist_ok=True) 
     client_path = save_path + AX_NAME
     results_path = save_path + RUN_NAME
