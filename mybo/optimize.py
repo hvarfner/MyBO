@@ -15,8 +15,11 @@ def main(cfg : DictConfig) -> None:
 
     # TODO either entire loop or single eval/call? cfg.closed_loop/open_loop?
     # ensure the auxilliary task (if any) gets retrieved here as well
-    objective = get_task(cfg)
-    
+    if cfg.max_rounds > 0:
+        objective = get_task(cfg)
+    else: 
+        objective = None
+        
     for opt_round in range(cfg.max_rounds):
         designs = get_designs(
             max_num_designs=cfg.batch_size, 
