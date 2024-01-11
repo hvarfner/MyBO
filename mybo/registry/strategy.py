@@ -44,7 +44,7 @@ def get_generation_strategy(
                 },
             },
         )
-    if init_cfg.num_doe > 0:
+    if compute_doe(init_cfg.num_doe, dimension=num_dimensions) > 0:
         init_step = GenerationStep(
             Models.SOBOL,
             num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)

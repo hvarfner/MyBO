@@ -1,7 +1,7 @@
 seed: 42
 
 resume_path: ''
-override: True
+override: False
 experiment_group: test
 experiment_name: ${task.name}_${acq.name}_run_${seed}
 save: True
