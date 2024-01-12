@@ -1,4 +1,5 @@
 import os
+from os.path import abspath
 from argparse import ArgumentParser
 
 import pandas as pd
@@ -17,8 +18,10 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--data')
     args = parser.parse_args()
 
-    print(f"Trying to append {args.data} to {args.client}.")
-    client = _get_client(args.client)
-    data_df = pd.read_csv(args.data)
+    client_path = abspath(args.client)
+    data_path = abspath(args.data)
+    print(f"Trying to append {abspath(args.data)} to {abspath(args.client)}.")
 
+    client = _get_client(client_path)
+    data_df = pd.read_csv(data_path)
     append_to_client(client, data_df, path=args.client)
