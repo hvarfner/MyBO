@@ -29,7 +29,7 @@ train_X = torch.Tensor([
     [0.7],
     [0.9],
 ])
-train_Y = torch.sin(7 * train_X).flatten()
+train_Y = torch.sin(7 * train_X)
 
 missing_X = torch.linspace(0, 1, 31).unsqueeze(-1)
 missing_Y = torch.zeros_like(missing_X) * torch.nan
@@ -51,16 +51,17 @@ class MyGP(ExactGP):
         )
         self.mean_module = ConstantMean(prior=NormalPrior(0, 1))
         self.covar_module = ScaleKernel(MaternKernel(lengthscale_prior=GammaPrior(3.0, 6.0)))
+        self.covar_module = ScaleKernel(MaternKernel(lengthscale_prior=GammaPrior(3.0, 6.0)))
     
     def forward(self, x):
         mean = self.mean_module(x)
         covar = self.covar_module(x)
+        bre
         return MultivariateNormal(mean, covar)
     
     def posterior(self, X):
         self.eval()
         mvn = self(X)
-        breakpoint()
         return mvn
 
 gp = MyGP(
