@@ -24,6 +24,7 @@ PARAMS = ["x1", "x2"]
 OBJECTIVES = ["y1", "y2"]
 GRID_SIZE = 41
 LEVELS = 25
+SUBSET = 30
 
 
 cm = plt.cm.get_cmap('RdBu')
@@ -41,8 +42,15 @@ thresholds = ax_client.experiment.optimization_config.objective_thresholds
 threshold_vals = np.array([thresholds[i].bound for i in range(len(thresholds))]) 
 threshold_vals = threshold_vals
 
-
 Y = df.loc[:, OBJECTIVES].to_numpy()
+evaluated_data = ~np.any(np.isnan(Y), axis=1)
+Y = Y[evaluated_data]
+X = df.loc[evaluated_data, PARAMS].to_numpy()
+
+X = X[:SUBSET]
+Y = Y[:SUBSET]
+breakpoint()
+
 all_better = np.all(Y > threshold_vals, axis=1).reshape(-1) 
 one_better = np.any(Y > threshold_vals, axis=1).reshape(-1)
 
@@ -58,12 +66,11 @@ for idx, objective in enumerate(OBJECTIVES):
 
     obj_index = np.argwhere(idx_arr).item()
 
-    X = df.loc[:, PARAMS].to_numpy()
     
     gp = ax_client.generation_strategy.model.model.surrogate.model
     ps = gp.posterior(Xt_plot)
     mean = ps.mean[..., obj_index].detach().numpy().reshape(GRID_SIZE, GRID_SIZE)
-    
+
     ax_.contourf(X1, X2, mean, levels=LEVELS)
     
     sc = ax_.scatter(X[:, 0], X[:, 1], s=180, c='white', edgecolors='k', linewidths=2)
@@ -73,3 +80,4 @@ for idx, objective in enumerate(OBJECTIVES):
 
 plt.show()
 
+breakpoint()

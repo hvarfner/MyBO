@@ -1,5 +1,6 @@
 name: fullybayesian
 kwargs:
+  is_fully_bayesian: True
   prior: saas
 
 fit_kwargs:

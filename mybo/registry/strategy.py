@@ -3,7 +3,7 @@ from typing import Dict
 from omegaconf import OmegaConf
 from ax.models.torch.botorch_modular.acquisition import Acquisition
 from ax.models.torch.botorch_modular.surrogate import Surrogate
-from ax.modelbridge.registry import Models
+from ax.modelbridge.registry import Generators
 from ax.modelbridge.generation_strategy import GenerationStep, GenerationStrategy
 
 from mybo.registry.models import MODEL_REGISTRY, parse_model_options
@@ -19,9 +19,8 @@ def get_generation_strategy(
         budget: int = -1,
     ) -> Dict:
         
-    model_enum = Models.BOTORCH_MODULAR
-
-        
+    model_enum = Generators.BOTORCH_MODULAR
+    model_cfg = OmegaConf.to_container(model_cfg)
     bo_step = GenerationStep(
             # model=model_enum,
             model=model_enum,
@@ -31,9 +30,9 @@ def get_generation_strategy(
                 # witht the objecive 
                 "fit_tracking_metrics": False,
                 "surrogate": Surrogate(
-                            botorch_model_class=MODEL_REGISTRY[model_cfg.name],
-                            model_options=parse_model_options(model_cfg["kwargs"]),
-                            mll_options=model_cfg.get("fit_kwargs"),
+                    botorch_model_class=MODEL_REGISTRY[model_cfg["name"]],
+                    model_options=parse_model_options(ard_num_dims=num_dimensions, model_kwargs=model_cfg["kwargs"]),
+                    mll_options=model_cfg.get("fit_kwargs"),
                 ),
                 "botorch_acqf_class": ACQUISITION_REGISTRY[acq_cfg.name],
                 "acquisition_options": parse_acquisition_options(acq_cfg.get("kwargs")),
@@ -46,7 +45,7 @@ def get_generation_strategy(
         )
     if compute_doe(init_cfg.num_doe, dimension=num_dimensions) > 0:
         init_step = GenerationStep(
-            Models.SOBOL,
+            Generators.SOBOL,
             num_trials=compute_doe(init_cfg.num_doe, dimension=num_dimensions)
         )
         steps = [init_step, bo_step]

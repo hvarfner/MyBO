@@ -14,5 +14,5 @@ defaults:
   - model: singletask
   - acqopt: medium
   - acq: lognei
-  - task: branin
+  - task: basic/branin
   - init: sobol
